@@ -1,0 +1,79 @@
+APPLICATION SHINY - SUIVI DE LA COLLECTE ET CONTRÔLE DE COHÉRENCE
+Enquête complémentaire et de productivité des ruches d'abeilles (ANSD)
+==========================================================================================
+
+L'application lit les exports Stata de Survey Solutions (toutes les versions du questionnaire)
+et présente, aux couleurs de l'ANSD :
+
+  - Tableau de bord : chiffres clés, progression cumulée, taux de complétion, avancement par
+                      région, contrôles les plus fréquents ;
+  - Évolution       : activité quotidienne (démarrés, envoyés, rejetés), durées des entretiens ;
+  - Territoires     : avancement par région et par département ;
+  - Enquêteurs      : performance, taux de rejet, calendrier enquêteur x jour, nuage
+                      durée / qualité pour cibler la supervision ;
+  - Production      : premiers résultats 2025 (miel, cire, rendement, prix médian) ;
+  - Incohérences    : entretiens à rejeter (bouton « Copier » du commentaire de rejet, détail
+                      dépliable), à vérifier, chez l'enquêteur, détail filtrable, bilans ;
+  - Méthodologie    : mode d'emploi et catalogue des 39 contrôles avec les seuils en vigueur.
+
+Le panneau de gauche permet de filtrer (version, région, enquêteur, période), d'ajuster les
+seuils des contrôles et de télécharger les classeurs Excel et la liste CSV de rejet pour l'API.
+Chaque tableau s'exporte en CSV (bouton « CSV ») et chaque graphique en image (icône en haut à
+droite du graphique). Les cartes s'agrandissent en plein écran (icône en bas à droite).
+Les contrôles et les résultats sont identiques à ceux du programme Python
+(programmes/suivi_collecte.py).
+
+Packages utilisés : bslib, bsicons, shinyWidgets, shinycssloaders, waiter (interface),
+echarts4r (graphiques), reactable (tableaux), haven, dplyr, tidyr, openxlsx (données).
+
+
+1. INSTALLATION (une seule fois par ordinateur)
+------------------------------------------------------------------------------------------
+  a) Installer R (version 4.3 ou plus récente) : https://cran.r-project.org/bin/windows/base/
+     Options par défaut. RStudio n'est pas nécessaire.
+  b) Au premier lancement, les packages R manquants s'installent automatiquement : quelques
+     minutes, connexion internet requise une seule fois (le proxy Windows est pris en charge).
+
+
+2. UTILISATION
+------------------------------------------------------------------------------------------
+  a) Placer les exports Stata de Survey Solutions (dossiers ou fichiers .zip, sans les
+     renommer : PROD_ECPRA_BMD_1_STATA_All, PROD_ECPRA_BMD_2_STATA_All, ...) au choix :
+       - dans le sous-dossier « donnees » de l'application ;
+       - ou dans le dossier qui contient le dossier de l'application.
+     L'application les trouve automatiquement. On peut aussi indiquer un autre dossier dans
+     le panneau « Données », ou téléverser les .zip directement depuis l'application.
+
+  b) Double-cliquer sur lancer_application.bat. L'application s'ouvre dans le navigateur.
+     Garder la fenêtre noire ouverte pendant l'utilisation ; la fermer pour arrêter.
+
+  c) Après un nouvel export : remplacer les fichiers puis cliquer sur « Charger / actualiser ».
+
+  Depuis RStudio : ouvrir app.R puis cliquer sur « Run App ».
+
+  Conseil : placer le dossier dans un chemin court, sans accents ni apostrophes,
+  par exemple C:\ANSD\application_shiny.
+
+
+3. REJETER LES ENTRETIENS DANS SURVEY SOLUTIONS
+------------------------------------------------------------------------------------------
+  Onglet Incohérences > À rejeter : cliquer sur « Copier » à côté de la clé, rechercher la clé
+  (interview__key) dans Survey Solutions, ouvrir l'entretien, cliquer sur « Rejeter » et coller.
+  Le triangle ▸ en début de ligne affiche le détail de chaque incohérence et l'interview__id.
+  La colonne « Action » indique qui rejette : le superviseur (statut Complété) ou le siège
+  (statut Approuvé superviseur).
+
+
+4. DÉPANNAGE
+------------------------------------------------------------------------------------------
+  « R est introuvable »             Installer R (étape 1a), puis relancer.
+  « ECHEC de l'installation »       Vérifier la connexion internet ou le proxy, puis relancer.
+                                    En dernier recours, dans R :
+                                    options(download.file.method = "wininet")
+                                    install.packages(c("shiny","bslib","bsicons","shinyWidgets",
+                                      "shinycssloaders","waiter","echarts4r","reactable",
+                                      "haven","dplyr","tidyr","openxlsx"))
+  « Aucun export ... trouvé »       Vérifier le dossier indiqué dans le panneau « Données ».
+  Le navigateur ne s'ouvre pas      Copier dans le navigateur l'adresse affichée dans la fenêtre
+                                    noire (http://127.0.0.1:....).
+  Le bouton « Copier » ne marche pas  Utiliser un navigateur récent (Edge, Chrome, Firefox).

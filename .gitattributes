@@ -1,0 +1,4 @@
+# Fins de ligne normalisées ; les lanceurs Windows gardent CRLF quel que soit le poste
+* text=auto
+*.bat text eol=crlf
+*.png binary

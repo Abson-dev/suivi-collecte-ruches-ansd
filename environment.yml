@@ -1,0 +1,12 @@
+# Environnement Python du projet « Ruches ANSD » (versions figées pour la reproductibilité)
+# Création :     conda env create -f environment.yml
+# Mise à jour :  conda env update -f environment.yml --prune
+name: ruches-ansd
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11.9
+  - pandas=2.2.2
+  - numpy=2.2.6
+  - pyreadstat=1.2.7
+  - openpyxl=3.1.5

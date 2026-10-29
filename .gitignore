@@ -1,0 +1,37 @@
+# ------------------------------------------------------------------
+# Données d'enquête : CONFIDENTIELLES, ne jamais publier
+# (noms, téléphones, localisation des exploitations et des apiculteurs)
+# ------------------------------------------------------------------
+PROD_ECPRA_BMD_*_STATA_All/
+PROD_ECPRA_BMD_*_STATA_All.zip
+*.dta
+application_shiny/donnees/*
+!application_shiny/donnees/A_LIRE.txt
+
+# Sorties générées (clés d'entretien, résultats nominatifs des enquêteurs)
+sorties/
+*.xlsx
+*.csv
+
+# Paquets de livraison (à publier plutôt comme « Release » GitHub)
+livrable_ANSD/
+
+# Documents de l'enquête
+*.pdf
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+rsconnect/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Système / OneDrive / Office
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*

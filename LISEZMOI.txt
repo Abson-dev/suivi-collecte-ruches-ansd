@@ -1,0 +1,113 @@
+SUIVI DE LA COLLECTE ET CONTRÔLE DE COHÉRENCE
+Enquête complémentaire et de productivité des ruches d'abeilles (ANSD)
+==========================================================================================
+
+Ce programme lit les exports Stata de Survey Solutions (toutes les versions du questionnaire)
+et produit trois fichiers dans le dossier « sorties » :
+
+  1. Suivi_collecte_AAAA-MM-JJ.xlsx
+     Tendances de la collecte : synthèse, évolution journalière, avancement par région et
+     département, production déclarée, performance des enquêteurs, enquêteur x jour.
+
+  2. Incoherences_a_rejeter_AAAA-MM-JJ.xlsx
+     - « À rejeter »         : entretiens complétés/approuvés présentant au moins une
+                               incohérence bloquante, avec un commentaire de rejet prêt à coller ;
+     - « À vérifier »        : valeurs atypiques, décision du superviseur (colonne jaune) ;
+     - « Chez l'enquêteur »  : entretiens non encore envoyés ou déjà rejetés (pour information) ;
+     - détail, synthèse par contrôle (liste des 39 contrôles et seuils), bilan par enquêteur.
+
+  3. Liste_rejet_API_AAAA-MM-JJ.csv
+     interview__id + commentaire des entretiens à rejeter, pour un rejet en masse par l'API.
+
+
+1. CONTENU DU DOSSIER
+------------------------------------------------------------------------------------------
+  lancer_suivi.bat            lanceur (double-clic)
+  environment.yml             versions des logiciels utilisés (reproductibilité)
+  programmes\suivi_collecte.py   programme de traitement
+  LISEZMOI.txt                ce fichier
+
+
+2. INSTALLATION (une seule fois par ordinateur)
+------------------------------------------------------------------------------------------
+  a) Installer Miniforge (gratuit) : https://conda-forge.org/download/
+     Choisir « Windows x86_64 », installer pour l'utilisateur courant (« Just Me »),
+     garder les options par défaut.
+     Si Miniforge, Miniconda ou Anaconda est déjà installé, passer cette étape.
+
+  b) C'est tout : au premier lancement, lancer_suivi.bat installe automatiquement
+     l'environnement Python du projet (« ruches-ansd »). Cela prend quelques minutes
+     et nécessite une connexion internet. Les lancements suivants sont immédiats et
+     fonctionnent hors connexion.
+
+
+3. UTILISATION (à chaque nouvel export)
+------------------------------------------------------------------------------------------
+  a) Dans Survey Solutions (Headquarters > Export des données), exporter chaque version du
+     questionnaire au format Stata, « Tous les statuts ».
+
+  b) Placer les exports dans CE dossier, à côté de lancer_suivi.bat, sans les renommer :
+       PROD_ECPRA_BMD_1_STATA_All        (version 1 : dossier décompressé ou fichier .zip)
+       PROD_ECPRA_BMD_2_STATA_All        (version 2)
+       PROD_ECPRA_BMD_3_STATA_All ...    (futures versions : prises en compte automatiquement)
+     Pour mettre à jour, remplacer les anciens exports par les nouveaux (supprimer l'ancien
+     dossier décompressé si vous déposez un nouveau .zip).
+
+  Conseil : placer le dossier du projet dans un chemin court, sans accents ni apostrophes,
+  par exemple C:\ANSD\Suivi_ruches (Windows refuse les chemins trop longs dans les lanceurs .bat).
+
+  c) Double-cliquer sur lancer_suivi.bat. Les résultats apparaissent dans « sorties ».
+     Les fichiers sont datés du jour : les sorties des jours précédents sont conservées.
+
+  Arborescence attendue :
+     <dossier du projet>\
+        lancer_suivi.bat
+        environment.yml
+        LISEZMOI.txt
+        programmes\suivi_collecte.py
+        PROD_ECPRA_BMD_1_STATA_All\   (PROD_ECPRA_BMD.dta, interview__actions.dta, ...)
+        PROD_ECPRA_BMD_2_STATA_All\
+        sorties\                      (créé automatiquement)
+
+
+4. REJETER LES ENTRETIENS DANS SURVEY SOLUTIONS
+------------------------------------------------------------------------------------------
+  Onglet « À rejeter » : pour chaque ligne, rechercher la clé (interview__key) dans la liste
+  des entretiens, ouvrir l'entretien, cliquer sur « Rejeter » et coller le contenu de la
+  colonne « Commentaire de rejet ». La colonne « Action » indique qui doit rejeter :
+  le superviseur (statut Complété) ou le siège (statut Approuvé superviseur).
+
+
+5. AJUSTER LES CONTRÔLES
+------------------------------------------------------------------------------------------
+  Les seuils (durée minimale, prix plausibles du miel et de la cire, rendement maximal,
+  nombre de questions non renseignées entraînant un rejet, etc.) sont regroupés en tête du
+  fichier programmes\suivi_collecte.py, rubrique « Seuils des contrôles ». Les modifier
+  avec un éditeur de texte (Bloc-notes, Notepad++), enregistrer, puis relancer.
+
+
+6. DÉPANNAGE
+------------------------------------------------------------------------------------------
+  « Miniforge est introuvable »
+      Installer Miniforge (étape 2a). S'il est installé dans un emplacement inhabituel,
+      lancer le traitement depuis « Miniforge Prompt » :
+          cd /d "<chemin du dossier du projet>"
+          conda env create -f environment.yml        (une seule fois)
+          conda activate ruches-ansd
+          python -X utf8 programmes\suivi_collecte.py
+
+  « ECHEC de l'installation de l'environnement »
+      Vérifier la connexion internet (ou le proxy de l'ANSD), puis relancer. Si un
+      environnement incomplet existe déjà, le supprimer dans Miniforge Prompt :
+          conda env remove -n ruches-ansd
+      puis relancer lancer_suivi.bat.
+
+  La fenêtre s'ouvre et se ferme aussitôt, ou « The current directory is invalid »
+      Le chemin du dossier est trop long ou contient des caractères spéciaux (’ « »...) :
+      déplacer le dossier vers un chemin court, par exemple C:\ANSD\Suivi_ruches.
+
+  « Aucun dossier PROD_ECPRA_BMD_<n>_STATA_All trouvé »
+      Les exports ne sont pas dans le même dossier que lancer_suivi.bat, ou ont été renommés.
+
+  « Impossible d'écrire ... : fermez le fichier dans Excel »
+      Un fichier de sortie du jour est ouvert dans Excel : le fermer et relancer.
