@@ -64,7 +64,23 @@ echarts4r (graphiques), reactable (tableaux), haven, dplyr, tidyr, openxlsx (don
   (statut Approuvé superviseur).
 
 
-4. DÉPANNAGE
+4. PARTAGER AVEC UNE PERSONNE EXTÉRIEURE (VERSION DE DIFFUSION)
+------------------------------------------------------------------------------------------
+  Panneau Téléchargements > « Exporter la version de diffusion » : produit un fichier HTML
+  unique (environ 2 Mo) qui s'ouvre dans n'importe quel navigateur, hors connexion, et peut
+  être envoyé par e-mail. Il reprend la sélection en cours (filtres) et contient :
+    - uniquement des agrégats : progression, avancement par région et département, durées,
+      contrôles de cohérence, production 2025 par région ;
+    - aucune donnée individuelle : ni clé d'entretien, ni commune, ni nom, ni téléphone,
+      ni commentaire de rejet ;
+    - les enquêteurs anonymisés (Enquêteur 01, 02... sans région) ;
+    - le secret statistique : toute valeur portant sur moins de 3 unités (réglable) est
+      remplacée par « s ».
+  Le masquage est primaire : vérifier avant diffusion qu'un total ne permet pas de retrouver
+  une valeur masquée par simple différence.
+
+
+5. DÉPANNAGE
 ------------------------------------------------------------------------------------------
   « R est introuvable »             Installer R (étape 1a), puis relancer.
   « ECHEC de l'installation »       Vérifier la connexion internet ou le proxy, puis relancer.

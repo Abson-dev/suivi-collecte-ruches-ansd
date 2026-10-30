@@ -50,6 +50,7 @@ Chaque version du questionnaire déployée sur le serveur produit un export dist
 │   │   ├── suivi.R               Tableaux de suivi de la collecte
 │   │   ├── export_excel.R        Classeurs Excel téléchargeables
 │   │   ├── interface.R           Charte ANSD, graphiques et tableaux
+│   │   ├── diffusion.R           Version de diffusion (HTML autonome, agrégats seuls)
 │   │   └── parametres.R          Seuils et catalogue des contrôles
 │   ├── www/logo_ansd.png
 │   ├── donnees/                  Dossier où déposer les exports (non versionné)
@@ -99,6 +100,16 @@ Le panneau latéral propose :
 - des filtres par version, région, enquêteur et période ;
 - les seuils des contrôles, réglables ;
 - le téléchargement des classeurs Excel et du CSV de rejet.
+
+#### Partager avec une personne extérieure
+
+Le bouton **« Exporter la version de diffusion »** (panneau Téléchargements) produit un **fichier HTML autonome** d'environ 2 Mo. Il s'ouvre hors connexion dans tout navigateur et s'envoie par e-mail. Il ne contient que des agrégats :
+
+- **aucune donnée individuelle** : ni clé d'entretien, ni commune, ni nom, ni commentaire. Un audit automatique le vérifie sur l'ensemble des identifiants de la base ;
+- **enquêteurs anonymisés** : Enquêteur 01, 02…, sans région ;
+- **secret statistique** : toute valeur portant sur moins de 3 unités (seuil réglable) est remplacée par « s ».
+
+Le masquage est primaire : avant diffusion, vérifier qu'un total ne permet pas de retrouver une valeur masquée par différence.
 
 Packages utilisés :
 - **interface** : `bslib`, `bsicons`, `shinyWidgets`, `shinycssloaders`, `waiter` ;

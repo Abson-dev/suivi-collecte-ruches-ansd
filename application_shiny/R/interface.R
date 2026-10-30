@@ -126,7 +126,9 @@ tableau <- function(df, colonnes = list(), page = 15, recherche = TRUE, filtres 
   reactable::reactable(
     df, columns = colonnes, searchable = recherche, filterable = filtres, striped = TRUE, highlight = TRUE,
     compact = TRUE, wrap = wrap, resizable = TRUE, defaultPageSize = page, showPageSizeOptions = nrow(df) > page,
-    pageSizeOptions = c(10, 15, 25, 50, 100), theme = THEME_TABLE, language = LANGUE_TABLE, elementId = id,
+    pageSizeOptions = c(10, 15, 25, 50, 100), theme = THEME_TABLE, language = LANGUE_TABLE,
+    # dans Shiny, l'identifiant du tableau (pour l'export CSV) est celui de la sortie
+    elementId = if (is.null(shiny::getDefaultReactiveDomain())) id else NULL,
     defaultColDef = reactable::colDef(minWidth = 90, headerVAlign = "bottom"), ...)
 }
 

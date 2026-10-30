@@ -98,7 +98,14 @@ ui <- page_navbar(
         downloadButton("dl_suivi", "Classeur de suivi (.xlsx)", class = "btn-primary w-100 mb-2"),
         downloadButton("dl_incoh", "Classeur des incohérences (.xlsx)", class = "btn-primary w-100 mb-2"),
         downloadButton("dl_csv", "Liste de rejet pour l'API (.csv)", class = "btn-outline-primary w-100"),
-        div(class = "note mt-2", "Les fichiers tiennent compte des filtres et des seuils choisis.")
+        div(class = "note mt-2", "Les fichiers tiennent compte des filtres et des seuils choisis."),
+        tags$hr(),
+        div(class = "fw-semibold mb-1", style = paste0("color:", ANSD$marine), bs_icon("share"), " Partage externe"),
+        div(class = "note", "Fichier HTML autonome : agrégats uniquement, enquêteurs anonymisés, petites cellules ",
+            "masquées. Aucune donnée individuelle."),
+        numericInput("seuil_secret", "Masquer les cellules de moins de (unités)", value = 3, min = 2, max = 20, step = 1),
+        downloadButton("dl_diffusion", "Exporter la version de diffusion", icon = bs_icon("globe"), class = "w-100",
+                       style = paste0("background:", ANSD$or, ";border-color:", ANSD$or, ";color:", ANSD$encre, ";font-weight:600"))
       )
     )
   ),
@@ -621,6 +628,25 @@ server <- function(input, output, session) {
   output$dl_csv <- downloadHandler(
     filename = function() paste0("Liste_rejet_API_", jour(), ".csv"),
     content = function(f) ecrire_csv_api(f, listes()$a_rejeter))
+
+  filtres_texte <- reactive({
+    p <- c(if (length(input$f_version)) paste("versions", paste(input$f_version, collapse = ", ")),
+           if (length(input$f_region)) paste("régions", paste(input$f_region, collapse = ", ")),
+           if (length(input$f_enq)) paste(length(input$f_enq), "enquêteur(s) sélectionné(s)"))
+    dd <- as.Date(m_f()$date_debut)
+    periode <- sprintf("période du %s au %s", format(min(dd, na.rm = TRUE), "%d/%m/%Y"), format(max(dd, na.rm = TRUE), "%d/%m/%Y"))
+    paste(c(if (length(p)) paste("Sélection :", paste(p, collapse = " ; ")) else "Ensemble de la collecte", periode),
+          collapse = " · ")
+  })
+  output$dl_diffusion <- downloadHandler(
+    filename = function() paste0("Suivi_collecte_ruches_diffusion_", jour(), ".html"),
+    content = function(f) {
+      seuil <- max(2, dplyr::coalesce(input$seuil_secret, 3))
+      dd <- donnees_diffusion(tab(), m_f(), det_f(), seuils(), seuil)
+      meta <- list(arret = format(max(donnees()$m$derniere_action, na.rm = TRUE), "%d/%m/%Y %H:%M"),
+                   filtres = filtres_texte(), genere = format(Sys.time(), "%d/%m/%Y %H:%M"))
+      ecrire_html_autonome(page_diffusion(dd, meta), f, "Suivi de la collecte - version de diffusion (ANSD)")
+    })
 }
 
 shinyApp(ui, server)
